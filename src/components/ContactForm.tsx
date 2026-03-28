@@ -20,8 +20,20 @@ export default function ContactForm() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
-    // TODO: Wire up to a form handler (e.g. Resend, Formspree, or a Next.js API route)
-    await new Promise((r) => setTimeout(r, 800));
+    const form = e.currentTarget;
+    const data = {
+      firstName: (form.elements.namedItem("firstName") as HTMLInputElement).value,
+      lastName: (form.elements.namedItem("lastName") as HTMLInputElement).value,
+      phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      service: (form.elements.namedItem("service") as HTMLSelectElement).value,
+      message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+    };
+    await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
     setLoading(false);
     setSubmitted(true);
   }
